@@ -104,9 +104,7 @@ if check_password():
 
     q_code = st.sidebar.text_input("الكود")
 
-    """q_serv = st.sidebar.text_input("الخدمة")"""
-
-    q_date = st.sidebar.text_input("التاريخ")
+ 
 
 
     if st.sidebar.button("ابدأ البحث"):
@@ -153,5 +151,6 @@ if check_password():
     if st.sidebar.button("🔒 تسجيل الخروج"):
         st.session_state["password_correct"] = False
         st.rerun()
+
 
 
