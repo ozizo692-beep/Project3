@@ -52,8 +52,6 @@ if check_password():
 
         try:
 
-
-
 response = requests.get(ONEDRIVE_FILE)
 df = pd.read_excel(BytesIO(response.content), engine="openpyxl")
             df.columns = [normalize_text(str(c)) for c in df.columns]
@@ -78,18 +76,17 @@ df = pd.read_excel(BytesIO(response.content), engine="openpyxl")
 
                 all_data.append({
 
-                  str(row.get("C-Code","")),
-                                str(row.get("Name","")),
-                                str(row.get("موقف الحالة","")),
-                                str(row.get("الرقم القومى","")),
-                                str(row.get("تاريخ الميلاد","")),
-                                str(row.get("رقم كارت المفاوضية للفرد","")),
-                                str(row.get("رقم ملف المفاوضية","")),
-                                str(row.get("كود المفاوضية","")),
-                                str(row.get("موقف اللجوء","")),
+ "C-Code": str(row.get("C-Code","")),
+ "Name": str(row.get("Name","")),
+ "موقف الحالة": str(row.get("موقف الحالة","")),
+ "الرقم القومى": str(row.get("الرقم القومى","")),
+ "تاريخ الميلاد": str(row.get("تاريخ الميلاد","")),
+ "رقم كارت المفاوضية للفرد": str(row.get("رقم كارت المفاوضية للفرد","")),
+ "رقم ملف المفاوضية": str(row.get("رقم ملف المفاوضية","")),
+ "كود المفاوضية": str(row.get("كود المفاوضية","")),
+ "موقف اللجوء": str(row.get("موقف اللجوء",""))
 
-               
-                })
+})
 
         except Exception as e:
 
@@ -154,6 +151,7 @@ df = pd.read_excel(BytesIO(response.content), engine="openpyxl")
     if st.sidebar.button("🔒 تسجيل الخروج"):
         st.session_state["password_correct"] = False
         st.rerun()
+
 
 
 
