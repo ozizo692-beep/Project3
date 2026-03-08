@@ -62,8 +62,8 @@ if check_password():
 
                 all_data.append({
 
-                    "C-Code": str(row.get("C-Code","")),
-                    "Name": str(row.get("Name","")),
+                    "C-Code": str(row.get("c-code","")),
+                    "Name": str(row.get("name","")),
                     "موقف الحالة": str(row.get("موقف الحالة","")),
                     "الرقم القومى": str(row.get("الرقم القومى","")),
                     "تاريخ الميلاد": str(row.get("تاريخ الميلاد","")),
@@ -100,14 +100,14 @@ if check_password():
 
             if q_name:
                 res = res[
-                    res["Name"]
+                    res["name"]
                     .apply(normalize_text)
                     .str.contains(normalize_text(q_name), na=False)
                 ]
 
             if q_code:
                 res = res[
-                    res["C-Code"].str.strip() == q_code.strip()
+                    res["c-code"].str.strip() == q_code.strip()
                 ]
 
             if res.empty:
@@ -129,4 +129,5 @@ if check_password():
     if st.sidebar.button("🔒 تسجيل الخروج"):
         st.session_state["password_correct"] = False
         st.rerun()
+
 
