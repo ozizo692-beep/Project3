@@ -48,9 +48,23 @@ if check_password():
                 header=0
             )
 
+            # تنظيف أسماء الأعمدة
             df.columns = df.columns.str.strip()
 
-            # تحويل القيم إلى نص
+            # إنشاء index صغير بالأعمدة المهمة فقط
+            columns_needed = [
+                "C-Code",
+                "Name",
+                "Age",
+                "الرقم القومى",
+                "تاريخ الميلاد",
+                "موقف الحالة",
+                "موقف اللجوء"
+            ]
+
+            df = df[columns_needed]
+
+            # تحويل القيم لنص
             df = df.astype(str).replace("nan", "")
 
             return df
@@ -62,11 +76,6 @@ if check_password():
 
     # تحميل البيانات
     index_df = load_data()
-
-    # عرض أول صفوف للتأكد (مؤقت)
-    st.write(index_df.head())
-    st.write(index_df.columns)
-
 
     # ================== البحث ==================
     st.sidebar.title("البحث")
