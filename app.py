@@ -2,7 +2,7 @@ import pandas as pd
 import streamlit as st
 
 # ================== رابط ملف OneDrive ==================
-ONEDRIVE_FILE = "C:\\Users\\omar.shoman\\OneDrive - Mersal Foundation\\Nada\\data.xlsx"
+ONEDRIVE_FILE = "https://mersalcharity-my.sharepoint.com/:x:/g/personal/omar_abdallah_mersal-ngo_org1/IQAZAIJBc3rMR4MABivs_NY4AU9ZwCDrPRi6BkAVIcAzCsY?e=7W7f9b"
 import pandas as pd
 
 
@@ -154,3 +154,4 @@ if search_btn:
             use_container_width=True,
             height=500
         )
+
