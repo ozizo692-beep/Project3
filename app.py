@@ -33,15 +33,6 @@ def check_password():
 # تشغيل التطبيق فقط في حالة تسجيل الدخول
 if check_password():
 
-    # ================== تنظيف النصوص ==================
-    def normalize_text(text):
-        if not isinstance(text, str):
-            text = str(text)
-
-        t = text.strip().lower()
-        t = t.replace('أ','ا').replace('إ','ا').replace('آ','ا').replace('ة','ه').replace('ى','ي')
-
-        return " ".join(t.split())
 
 
     # ================== تحميل البيانات من OneDrive ==================
@@ -54,7 +45,6 @@ if check_password():
             response = requests.get(ONEDRIVE_FILE)
             df = pd.read_excel(BytesIO(response.content), engine="openpyxl")
 
-            df.columns = [normalize_text(str(c)) for c in df.columns]
 
             df = df.astype(str).replace('nan','')
 
@@ -62,8 +52,8 @@ if check_password():
 
                 all_data.append({
 
-    "C-Code": str(row.get("c-code","")),
-    "Name": str(row.get("name","")),
+    "C-Code": str(row.get("C-code","")),
+    "Name": str(row.get("Name","")),
     "موقف الحالة": str(row.get("موقف الحاله","")),
     "الرقم القومى": str(row.get("الرقم القومي","")),
     "تاريخ الميلاد": str(row.get("تاريخ الميلاد","")),
@@ -98,11 +88,7 @@ if check_password():
             res = index_df.copy()
 
             if q_name:
-                res = res[
-                    res["Name"]
-                    .apply(normalize_text)
-                    .str.contains(normalize_text(q_name), na=False)
-                ]
+               res["Name"].str.contains(q_name, case=False, na=False)
 
             if q_code:
                 res = res[
@@ -127,6 +113,7 @@ if check_password():
     if st.sidebar.button("🔒 تسجيل الخروج"):
         st.session_state["password_correct"] = False
         st.rerun()
+
 
 
 
