@@ -100,14 +100,14 @@ if check_password():
 
             if q_name:
                 res = res[
-                    res["name"]
+                    res["Name"]
                     .apply(normalize_text)
                     .str.contains(normalize_text(q_name), na=False)
                 ]
 
             if q_code:
                 res = res[
-                    res["c-code"].str.strip() == q_code.strip()
+                  res["C-Code"].str.strip() == q_code.strip()
                 ]
 
             if res.empty:
@@ -129,5 +129,6 @@ if check_password():
     if st.sidebar.button("🔒 تسجيل الخروج"):
         st.session_state["password_correct"] = False
         st.rerun()
+
 
 
