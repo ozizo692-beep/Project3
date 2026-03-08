@@ -51,45 +51,30 @@ if check_password():
         all_data = []
 
         try:
+            response = requests.get(ONEDRIVE_FILE)
+            df = pd.read_excel(BytesIO(response.content), engine="openpyxl")
 
-response = requests.get(ONEDRIVE_FILE)
-df = pd.read_excel(BytesIO(response.content), engine="openpyxl")
             df.columns = [normalize_text(str(c)) for c in df.columns]
 
             df = df.astype(str).replace('nan','')
 
-            for i,row in df.iterrows():
-
-                def get_flexible_val(keywords):
-
-                    for kw in keywords:
-
-                        norm_kw = normalize_text(kw)
-
-                        for col in df.columns:
-
-                            if norm_kw in col:
-
-                                return row[col].strip()
-
-                    return ""
+            for i, row in df.iterrows():
 
                 all_data.append({
 
- "C-Code": str(row.get("C-Code","")),
- "Name": str(row.get("Name","")),
- "موقف الحالة": str(row.get("موقف الحالة","")),
- "الرقم القومى": str(row.get("الرقم القومى","")),
- "تاريخ الميلاد": str(row.get("تاريخ الميلاد","")),
- "رقم كارت المفاوضية للفرد": str(row.get("رقم كارت المفاوضية للفرد","")),
- "رقم ملف المفاوضية": str(row.get("رقم ملف المفاوضية","")),
- "كود المفاوضية": str(row.get("كود المفاوضية","")),
- "موقف اللجوء": str(row.get("موقف اللجوء",""))
+                    "C-Code": str(row.get("C-Code","")),
+                    "Name": str(row.get("Name","")),
+                    "موقف الحالة": str(row.get("موقف الحالة","")),
+                    "الرقم القومى": str(row.get("الرقم القومى","")),
+                    "تاريخ الميلاد": str(row.get("تاريخ الميلاد","")),
+                    "رقم كارت المفاوضية للفرد": str(row.get("رقم كارت المفاوضية للفرد","")),
+                    "رقم ملف المفاوضية": str(row.get("رقم ملف المفاوضية","")),
+                    "كود المفاوضية": str(row.get("كود المفاوضية","")),
+                    "موقف اللجوء": str(row.get("موقف اللجوء",""))
 
-})
+                })
 
         except Exception as e:
-
             st.error(f"خطأ في تحميل البيانات: {e}")
 
         return pd.DataFrame(all_data)
@@ -101,16 +86,12 @@ df = pd.read_excel(BytesIO(response.content), engine="openpyxl")
 
     # ================== البحث ==================
     q_name = st.sidebar.text_input("اسم الحالة")
-
     q_code = st.sidebar.text_input("الكود")
-
- 
 
 
     if st.sidebar.button("ابدأ البحث"):
 
         if index_df.empty:
-
             st.error("⚠️ قاعدة البيانات فارغة.")
 
         else:
@@ -119,7 +100,7 @@ df = pd.read_excel(BytesIO(response.content), engine="openpyxl")
 
             if q_name:
                 res = res[
-                    res["اName"]
+                    res["Name"]
                     .apply(normalize_text)
                     .str.contains(normalize_text(q_name), na=False)
                 ]
@@ -129,13 +110,10 @@ df = pd.read_excel(BytesIO(response.content), engine="openpyxl")
                     res["C-Code"].str.strip() == q_code.strip()
                 ]
 
-
             if res.empty:
-
                 st.warning("❌ لا توجد نتائج مطابقة.")
 
             else:
-
                 st.success(f"✅ تم العثور على {len(res)} نتيجة")
 
                 st.dataframe(res, use_container_width=True)
@@ -151,9 +129,3 @@ df = pd.read_excel(BytesIO(response.content), engine="openpyxl")
     if st.sidebar.button("🔒 تسجيل الخروج"):
         st.session_state["password_correct"] = False
         st.rerun()
-
-
-
-
-
-
