@@ -36,46 +36,49 @@ def check_password():
 # ================== تشغيل التطبيق ==================
 if check_password():
 
-    # ================== تحميل البيانات ==================
     @st.cache_data(show_spinner="جاري تحميل البيانات من OneDrive...")
-    def load_data():
-        try:
-            response = requests.get(ONEDRIVE_FILE)
+def load_data():
+    try:
+        response = requests.get(ONEDRIVE_FILE)
 
-            df = pd.read_excel(
-                BytesIO(response.content),
-                engine="openpyxl",
-                header=0
-            )
+        df = pd.read_excel(
+            BytesIO(response.content),
+            engine="openpyxl"
+        )
 
-            # تنظيف أسماء الأعمدة
-            df.columns = df.columns.str.strip()
+        # تنظيف أسماء الأعمدة
+        df.columns = (
+            df.columns.astype(str)
+            .str.strip()
+            .str.replace("\n", "")
+        )
 
-            # إنشاء index صغير بالأعمدة المهمة فقط
-            columns_needed = [
-                "C-Code",
-                "Name",
-                "Age",
-                "الرقم القومى",
-                "تاريخ الميلاد",
-                "موقف الحالة",
-                "موقف اللجوء"
-            ]
+        # عرض الأعمدة للتأكد
+        st.write("الأعمدة الموجودة:", df.columns)
 
-            df = df[columns_needed]
+        # الأعمدة المطلوبة
+        wanted_cols = [
+            "C-Code",
+            "Name",
+            "Age",
+            "الرقم القومى",
+            "تاريخ الميلاد",
+            "موقف الحالة",
+            "موقف اللجوء"
+        ]
 
-            # تحويل القيم لنص
-            df = df.astype(str).replace("nan", "")
+        # اختيار الأعمدة الموجودة فقط
+        existing_cols = [c for c in wanted_cols if c in df.columns]
 
-            return df
+        df = df[existing_cols]
 
-        except Exception as e:
-            st.error(f"خطأ في تحميل البيانات: {e}")
-            return pd.DataFrame()
+        df = df.astype(str).replace("nan","")
 
+        return df
 
-    # تحميل البيانات
-    index_df = load_data()
+    except Exception as e:
+        st.error(f"خطأ في تحميل البيانات: {e}")
+        return pd.DataFrame()
 
     # ================== البحث ==================
     st.sidebar.title("البحث")
@@ -121,3 +124,4 @@ if check_password():
     if st.sidebar.button("🔒 تسجيل الخروج"):
         st.session_state["password_correct"] = False
         st.rerun()
+
