@@ -1,5 +1,7 @@
 import pandas as pd
 import streamlit as st
+import requests
+from io import BytesIO
 
 # إعداد الصفحة
 st.set_page_config(page_title="نظام البحث ", layout="wide")
@@ -50,8 +52,10 @@ if check_password():
 
         try:
 
-            df = pd.read_excel(ONEDRIVE_FILE, engine="openpyxl")
 
+
+response = requests.get(ONEDRIVE_FILE)
+df = pd.read_excel(BytesIO(response.content), engine="openpyxl")
             df.columns = [normalize_text(str(c)) for c in df.columns]
 
             df = df.astype(str).replace('nan','')
@@ -150,6 +154,7 @@ if check_password():
     if st.sidebar.button("🔒 تسجيل الخروج"):
         st.session_state["password_correct"] = False
         st.rerun()
+
 
 
 
