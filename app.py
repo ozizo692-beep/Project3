@@ -62,8 +62,8 @@ if check_password():
 
                 all_data.append({
 
-                    "C-Code": str(row.get("c-code","")),
-                    "Name": str(row.get("name","")),
+                    "C-Code": str(row.get("C-code","")),
+                    "Name": str(row.get("Name","")),
                     "موقف الحالة": str(row.get("موقف الحالة","")),
                     "الرقم القومى": str(row.get("الرقم القومى","")),
                     "تاريخ الميلاد": str(row.get("تاريخ الميلاد","")),
@@ -82,7 +82,6 @@ if check_password():
 
     # تحميل البيانات
     index_df = build_index()
-    st.write(index_df.columns)
 
     # ================== البحث ==================
     q_name = st.sidebar.text_input("اسم الحالة")
@@ -128,6 +127,7 @@ if check_password():
     if st.sidebar.button("🔒 تسجيل الخروج"):
         st.session_state["password_correct"] = False
         st.rerun()
+
 
 
 
