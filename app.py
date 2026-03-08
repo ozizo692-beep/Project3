@@ -41,11 +41,11 @@ if check_password():
         try:
             response = requests.get(ONEDRIVE_FILE)
 
-             df = pd.read_excel(
-               BytesIO(response.content),
-               engine="openpyxl",
-                header=0
-           )
+        df = pd.read_excel(
+            BytesIO(response.content),
+            engine="openpyxl",
+            header=0
+        )
 
                df.columns = df.columns.str.strip()
 
@@ -107,5 +107,6 @@ st.write(df.columns)
     if st.sidebar.button("🔒 تسجيل الخروج"):
         st.session_state["password_correct"] = False
         st.rerun()
+
 
 
