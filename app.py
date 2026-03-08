@@ -5,8 +5,7 @@ import streamlit as st
 st.set_page_config(page_title="نظام البحث ", layout="wide")
 
 # ================== رابط ملف OneDrive ==================
-ONEDRIVE_FILE = "https://mersalcharity-my.sharepoint.com/:x:/g/personal/omar_abdallah_mersal-ngo_org1/IQAZAIJBc3rMR4MABivs_NY4AU9ZwCDrPRi6BkAVIcAzCsY?e=NA7XBf"
-
+ONEDRIVE_FILE = "https://mersalcharity-my.sharepoint.com/:x:/g/personal/omar_abdallah_mersal-ngo_org1/IQAZAIJBc3rMR4MABivs_NY4AU9ZwCDrPRi6BkAVIcAzCsY?download=1"
 
 # ================== 1. نظام تسجيل الدخول ==================
 def check_password():
@@ -151,6 +150,7 @@ if check_password():
     if st.sidebar.button("🔒 تسجيل الخروج"):
         st.session_state["password_correct"] = False
         st.rerun()
+
 
 
 
