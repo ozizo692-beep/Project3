@@ -124,11 +124,11 @@ if check_password():
                     file_name="search_results.csv"
                 )
 
-           st.write(index_df.columns)
     # ================== تسجيل الخروج ==================
     if st.sidebar.button("🔒 تسجيل الخروج"):
         st.session_state["password_correct"] = False
         st.rerun()
+
 
 
 
