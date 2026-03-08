@@ -62,17 +62,17 @@ if check_password():
 
                 all_data.append({
 
-                    "C-Code": str(row.get("C-code","")),
-                    "Name": str(row.get("Name","")),
-                    "موقف الحالة": str(row.get("موقف الحالة","")),
-                    "الرقم القومى": str(row.get("الرقم القومى","")),
-                    "تاريخ الميلاد": str(row.get("تاريخ الميلاد","")),
-                    "رقم كارت المفاوضية للفرد": str(row.get("رقم كارت المفاوضية للفرد","")),
-                    "رقم ملف المفاوضية": str(row.get("رقم ملف المفاوضية","")),
-                    "كود المفاوضية": str(row.get("كود المفاوضية","")),
-                    "موقف اللجوء": str(row.get("موقف اللجوء",""))
+    "C-Code": str(row.get("c-code","")),
+    "Name": str(row.get("name","")),
+    "موقف الحالة": str(row.get("موقف الحاله","")),
+    "الرقم القومى": str(row.get("الرقم القومي","")),
+    "تاريخ الميلاد": str(row.get("تاريخ الميلاد","")),
+    "رقم كارت المفاوضية للفرد": str(row.get("رقم كارت المفاوضيه للفرد","")),
+    "رقم ملف المفاوضية": str(row.get("رقم ملف المفاوضيه","")),
+    "كود المفاوضية": str(row.get("كود المفاوضيه","")),
+    "موقف اللجوء": str(row.get("موقف اللجوء",""))
 
-                })
+})
 
         except Exception as e:
             st.error(f"خطأ في تحميل البيانات: {e}")
@@ -127,6 +127,7 @@ if check_password():
     if st.sidebar.button("🔒 تسجيل الخروج"):
         st.session_state["password_correct"] = False
         st.rerun()
+
 
 
 
