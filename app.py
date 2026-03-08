@@ -10,7 +10,7 @@ st.set_page_config(page_title="نظام البحث", layout="wide")
 ONEDRIVE_FILE = "https://mersalcharity-my.sharepoint.com/:x:/g/personal/omar_abdallah_mersal-ngo_org1/IQAZAIJBc3rMR4MABivs_NY4AU9ZwCDrPRi6BkAVIcAzCsY?download=1"
 
 
-# ================== نظام تسجيل الدخول ==================
+# ================== تسجيل الدخول ==================
 def check_password():
     if "password_correct" not in st.session_state:
         st.session_state["password_correct"] = False
@@ -33,7 +33,7 @@ def check_password():
     return False
 
 
-# ================== تشغيل التطبيق بعد تسجيل الدخول ==================
+# ================== تشغيل التطبيق ==================
 if check_password():
 
     # ================== تحميل البيانات ==================
@@ -41,10 +41,18 @@ if check_password():
     def load_data():
         try:
             response = requests.get(ONEDRIVE_FILE)
-            df = pd.read_excel(BytesIO(response.content), engine="openpyxl")
 
-            df.columns = df.columns.str.strip()
-            df = df.astype(str).replace("nan","")
+            df = pd.read_excel(
+                BytesIO(response.content),
+                engine="openpyxl",
+                header=0
+            )
+
+            # تنظيف أسماء الأعمدة
+            df.columns = df.columns.astype(str).str.strip()
+
+            # تحويل القيم إلى نص
+            df = df.astype(str).replace("nan", "")
 
             return df
 
@@ -55,7 +63,7 @@ if check_password():
 
     # تحميل البيانات
     index_df = load_data()
-    st.write(index_df.columns)
+
     # ================== البحث ==================
     st.sidebar.title("البحث")
 
@@ -100,4 +108,3 @@ if check_password():
     if st.sidebar.button("🔒 تسجيل الخروج"):
         st.session_state["password_correct"] = False
         st.rerun()
-
