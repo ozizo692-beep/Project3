@@ -85,7 +85,7 @@ if check_password():
                                 str(row.get("كود المفاوضية","")),
                                 str(row.get("موقف اللجوء","")),
 
-                    "السطر": i + 2
+               
                 })
 
         except Exception as e:
@@ -165,3 +165,4 @@ if check_password():
     if st.sidebar.button("🔒 تسجيل الخروج"):
         st.session_state["password_correct"] = False
         st.rerun()
+
