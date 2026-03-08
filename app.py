@@ -7,8 +7,7 @@ from io import BytesIO
 st.set_page_config(page_title="نظام البحث", layout="wide")
 
 # ================== رابط ملف OneDrive ==================
-ONEDRIVE_FILE = "https://mersalcharity-my.sharepoint.com/:x:/g/personal/omar_abdallah_mersal-ngo_org1/IQAZAIJBc3rMR4MABivs_NY4AU9ZwCDrPRi6BkAVIcAzCsY?download=1"
-
+ONEDRIVE_FILE = "https://mersalcharity-my.sharepoint.com/:x:/g/personal/omar_abdallah_mersal-ngo_org1/IQAZAIJBc3rMR4MABivs_NY4AU9ZwCDrPRi6BkAVIcAzCsY?download=1&web=0"
 
 # ================== تسجيل الدخول ==================
 def check_password():
@@ -42,14 +41,13 @@ if check_password():
         try:
             response = requests.get(ONEDRIVE_FILE)
 
-            df = pd.read_excel(
-                BytesIO(response.content),
-                engine="openpyxl",
+             df = pd.read_excel(
+               BytesIO(response.content),
+               engine="openpyxl",
                 header=0
-            )
+           )
 
-            # تنظيف أسماء الأعمدة
-            df.columns = df.columns.astype(str).str.strip()
+               df.columns = df.columns.str.strip()
 
             # تحويل القيم إلى نص
             df = df.astype(str).replace("nan", "")
@@ -63,8 +61,9 @@ if check_password():
 
     # تحميل البيانات
     index_df = load_data()
-    st.write(index_df.columns)
-    # ================== البحث ==================
+st.write(df.head())
+st.write(df.columns)
+# ================== البحث ==================
     st.sidebar.title("البحث")
 
     q_name = st.sidebar.text_input("اسم الحالة")
@@ -108,4 +107,5 @@ if check_password():
     if st.sidebar.button("🔒 تسجيل الخروج"):
         st.session_state["password_correct"] = False
         st.rerun()
+
 
