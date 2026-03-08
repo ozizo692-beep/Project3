@@ -55,7 +55,7 @@ if check_password():
 
     # تحميل البيانات
     index_df = load_data()
-
+    st.write(index_df.columns)
     # ================== البحث ==================
     st.sidebar.title("البحث")
 
@@ -100,3 +100,4 @@ if check_password():
     if st.sidebar.button("🔒 تسجيل الخروج"):
         st.session_state["password_correct"] = False
         st.rerun()
+
