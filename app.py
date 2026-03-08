@@ -1,129 +1,156 @@
 import pandas as pd
 import streamlit as st
-import requests
-from io import BytesIO
-
-# إعداد الصفحة
-st.set_page_config(page_title="نظام البحث", layout="wide")
 
 # ================== رابط ملف OneDrive ==================
-ONEDRIVE_FILE = "https://mersalcharity-my.sharepoint.com/:x:/g/personal/omar_abdallah_mersal-ngo_org1/IQAZAIJBc3rMR4MABivs_NY4AU9ZwCDrPRi6BkAVIcAzCsY?download=1&web=0"
+ONEDRIVE_FILE = "C:\\Users\\omar.shoman\\OneDrive - Mersal Foundation\\Nada\\data.xlsx"
+import pandas as pd
 
 
-# ================== تسجيل الدخول ==================
-def check_password():
-    if "password_correct" not in st.session_state:
-        st.session_state["password_correct"] = False
+# ================== تحميل ملف الخدمات ==================
 
-    if st.session_state["password_correct"]:
-        return True
+df = pd.read_excel(ONEDRIVE_FILE)
+# ================== BUILD INDEX ==================
 
-    st.title("🔐 تسجيل الدخول للنظام الخاص")
+@st.cache_data(show_spinner="جاري تحميل البيانات...")
+def build_index():
 
-    user = st.text_input("اسم المستخدم")
-    pw = st.text_input("كلمة المرور", type="password")
+    data = []
 
-    if st.button("دخول"):
-        if user == "admin" and pw == "12345":
-            st.session_state["password_correct"] = True
-            st.rerun()
-        else:
-            st.error("❌ اسم المستخدم أو كلمة المرور غير صحيحة")
-
-    return False
-
-
-# ================== تشغيل التطبيق ==================
-if check_password():
-
-    @st.cache_data(show_spinner="جاري تحميل البيانات من OneDrive...")
-def load_data():
     try:
-        response = requests.get(ONEDRIVE_FILE)
 
-        df = pd.read_excel(
-            BytesIO(response.content),
-            engine="openpyxl"
-        )
+        xls = pd.ExcelFile(ONEDRIVE_FILE)
 
-        # تنظيف أسماء الأعمدة
-        df.columns = (
-            df.columns.astype(str)
-            .str.strip()
-            .str.replace("\n", "")
-        )
+        for sheet in xls.sheet_names:
 
-        # عرض الأعمدة للتأكد
-        st.write("الأعمدة الموجودة:", df.columns)
+            try:
 
-        # الأعمدة المطلوبة
-        wanted_cols = [
-            "C-Code",
-            "Name",
-            "Age",
-            "الرقم القومى",
-            "تاريخ الميلاد",
-            "موقف الحالة",
-            "موقف اللجوء"
-        ]
+                df = pd.read_excel(ONEDRIVE_FILE, sheet_name=sheet)
 
-        # اختيار الأعمدة الموجودة فقط
-        existing_cols = [c for c in wanted_cols if c in df.columns]
+                df.columns = df.columns.astype(str).str.strip()
 
-        df = df[existing_cols]
+            except:
+                continue
 
-        df = df.astype(str).replace("nan","")
+            for i, row in df.iterrows():
 
-        return df
+                data.append([
+
+                    str(row.get("C-Code","")),
+                    str(row.get("Name","")),
+                    str(row.get("موقف الحالة","")),
+                    str(row.get("الرقم القومى","")),
+                    str(row.get("تاريخ الميلاد","")),
+                    str(row.get("رقم كارت المفاوضية للفرد","")),
+                    str(row.get("رقم ملف المفاوضية","")),
+                    str(row.get("كود المفاوضية","")),
+                    str(row.get("موقف اللجوء","")),
+                    "OneDrive"
+
+                ])
 
     except Exception as e:
+
         st.error(f"خطأ في تحميل البيانات: {e}")
-        return pd.DataFrame()
-        # تحميل البيانات
-    index_df = load_data()
-    # ================== البحث ==================
-    st.sidebar.title("البحث")
 
-    q_name = st.sidebar.text_input("اسم الحالة")
-    q_code = st.sidebar.text_input("الكود")
+    df_index = pd.DataFrame(
 
-    if st.sidebar.button("ابدأ البحث"):
+        data,
 
-        if index_df.empty:
-            st.error("⚠️ قاعدة البيانات فارغة")
+        columns=[
 
-        else:
+            "C-Code",
+            "Name",
+            "موقف الحالة",
+            "الرقم القومى",
+            "تاريخ الميلاد",
+            "رقم كارت المفاوضية للفرد",
+            "رقم ملف المفاوضية",
+            "كود المفاوضية",
+            "موقف اللجوء",
+            "Path"
 
-            res = index_df.copy()
+        ]
+    )
 
-            if q_name:
-                res = res[
-                    res["Name"].str.contains(q_name, case=False, na=False)
-                ]
-
-            if q_code:
-                res = res[
-                    res["C-Code"].astype(str).str.contains(q_code.strip(), na=False)
-                ]
-
-            if res.empty:
-                st.warning("❌ لا توجد نتائج مطابقة")
-
-            else:
-                st.success(f"✅ تم العثور على {len(res)} نتيجة")
-
-                st.dataframe(res, use_container_width=True)
-
-                st.download_button(
-                    "📥 تحميل النتائج CSV",
-                    data=res.to_csv(index=False).encode("utf-8-sig"),
-                    file_name="search_results.csv"
-                )
+    return df_index
 
 
-    # ================== تسجيل الخروج ==================
-    if st.sidebar.button("🔒 تسجيل الخروج"):
-        st.session_state["password_correct"] = False
-        st.rerun()
+# ================== LOAD INDEX ==================
+
+def load_index():
+
+    return build_index()
 
 
+# ================== SEARCH ==================
+
+def search_index(index_df, code, name):
+
+    df = index_df.copy()
+
+    if code:
+
+        df = df[
+            (df["C-Code"].astype(str).str.strip() == code) |
+
+            (df["رقم كارت المفاوضية للفرد"].astype(str).str.strip() == code) |
+
+            (df["رقم ملف المفاوضية"].astype(str).str.strip() == code) |
+
+            (df["كود المفاوضية"].astype(str).str.strip() == code)
+        ]
+
+    if name:
+
+        df = df[
+            df["Name"].str.contains(name, case=False, na=False)
+        ]
+
+    return df
+
+
+# ================== واجهة Streamlit ==================
+
+st.title("🔎 Search System")
+
+index_df = load_index()
+
+# تقسيم الشاشة مثل مشروعك
+left_col, right_col = st.columns([1,3])
+
+with left_col:
+
+    st.subheader("Search")
+
+    code = st.text_input("C-Code")
+
+    name = st.text_input("Name")
+
+    search_btn = st.button("Search")
+
+    results_label = st.empty()
+
+with right_col:
+
+    table_placeholder = st.empty()
+
+# تنفيذ البحث
+if search_btn:
+
+    results = search_index(index_df, code, name)
+
+    if results.empty:
+
+        results_label.warning("عدد النتائج: 0")
+
+        table_placeholder.warning("لا توجد نتائج")
+
+    else:
+
+        results_label.success(f"عدد النتائج: {len(results)}")
+
+        table_placeholder.dataframe(
+            results,
+            use_container_width=True,
+            height=500
+        )
