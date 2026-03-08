@@ -131,18 +131,6 @@ if check_password():
                     res["C-Code"].str.strip() == q_code.strip()
                 ]
 
-           """ if q_serv:
-                res = res[
-                    res["الخدمة"]
-                    .apply(normalize_text)
-                    .str.contains(normalize_text(q_serv), na=False)
-                ]
-
-            if q_date:
-                res = res[
-                    res["التاريخ"].str.contains(q_date, na=False)
-                ]"""
-
 
             if res.empty:
 
@@ -165,4 +153,5 @@ if check_password():
     if st.sidebar.button("🔒 تسجيل الخروج"):
         st.session_state["password_correct"] = False
         st.rerun()
+
 
