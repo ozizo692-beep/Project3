@@ -87,13 +87,15 @@ if check_password():
 
             res = index_df.copy()
 
-            if q_name:
-               res["Name"].str.contains(q_name, case=False, na=False)
+           if q_name:
+    res = res[
+        res["Name"].str.contains(q_name, case=False, na=False)
+    ]
 
-            if q_code:
-                res = res[
-                  res["C-Code"].str.strip() == q_code.strip()
-                ]
+if q_code:
+    res = res[
+        res["C-Code"].astype(str).str.contains(q_code.strip(), na=False)
+    ]
 
             if res.empty:
                 st.warning("❌ لا توجد نتائج مطابقة.")
@@ -113,6 +115,7 @@ if check_password():
     if st.sidebar.button("🔒 تسجيل الخروج"):
         st.session_state["password_correct"] = False
         st.rerun()
+
 
 
 
