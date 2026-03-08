@@ -79,7 +79,8 @@ def load_data():
     except Exception as e:
         st.error(f"خطأ في تحميل البيانات: {e}")
         return pd.DataFrame()
-
+        # تحميل البيانات
+    index_df = load_data()
     # ================== البحث ==================
     st.sidebar.title("البحث")
 
@@ -124,4 +125,5 @@ def load_data():
     if st.sidebar.button("🔒 تسجيل الخروج"):
         st.session_state["password_correct"] = False
         st.rerun()
+
 
