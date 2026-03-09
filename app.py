@@ -1,4 +1,3 @@
-```python
 import pandas as pd
 import streamlit as st
 import requests
@@ -133,3 +132,4 @@ if check_password():
         st.session_state["password_correct"] = False
         st.rerun()
 ```
+
