@@ -61,7 +61,7 @@ if check_password():
 
 
     index_df = load_data()
-
+    st.write(index_df.columns)
     # ================== تنظيف النص ==================
     def normalize_text(text):
 
@@ -139,4 +139,5 @@ if check_password():
 
         st.session_state["password_correct"] = False
         st.rerun()
+
 
