@@ -2,6 +2,8 @@ import os
 from pathlib import Path
 import pandas as pd
 import streamlit as st
+import requests
+from io import BytesIO
 
 # ================== إعداد الصفحة ==================
 st.set_page_config(page_title="نظام البحث", layout="wide")
@@ -32,12 +34,20 @@ def check_password():
 
 # ================== تشغيل النظام بعد تسجيل الدخول ==================
 if check_password():
+# ================== استدعاء الداتا ==================
+ONEDRIVE_URL = "https://mersalcharity-my.sharepoint.com/:x:/g/personal/omar_abdallah_mersal-ngo_org1/IQAZAIJBc3rMR4MABivs_NY4AewjiwrpDvZzAH-BdcsHcdk?download=1"
 
-    BASE_DIR = Path(__file__).parent if "__file__" in locals() else Path.cwd()
-    DATA_FOLDER = BASE_DIR / "data"
+@st.cache_data
+def load_data():
 
-    if not DATA_FOLDER.exists():
-        DATA_FOLDER.mkdir(parents=True, exist_ok=True)
+    r = requests.get(ONEDRIVE_URL)
+
+    file = BytesIO(r.content)
+
+    df = pd.read_excel(file)
+
+    return df
+ 
 
     # ================== تنظيف النص ==================
     def normalize_text(text):
@@ -170,3 +180,4 @@ if check_password():
         st.session_state["password_correct"] = False
 
         st.rerun()
+
