@@ -1,5 +1,3 @@
-import os
-from pathlib import Path
 import pandas as pd
 import streamlit as st
 import requests
@@ -32,26 +30,32 @@ def check_password():
     return False
 
 
-# ================== تشغيل النظام بعد تسجيل الدخول ==================
+# ================== تشغيل النظام ==================
 if check_password():
 
+    # ================== رابط OneDrive ==================
+    ONEDRIVE_URL = "https://mersalcharity-my.sharepoint.com/:x:/g/personal/omar_abdallah_mersal-ngo_org1/IQAZAIJBc3rMR4MABivs_NY4AewjiwrpDvZzAH-BdcsHcdk?download=1"
 
 
-    
-# ================== استدعاء الداتا ==================
-ONEDRIVE_URL = "https://mersalcharity-my.sharepoint.com/:x:/g/personal/omar_abdallah_mersal-ngo_org1/IQAZAIJBc3rMR4MABivs_NY4AewjiwrpDvZzAH-BdcsHcdk?download=1"
+    # ================== تحميل البيانات ==================
+    @st.cache_data(show_spinner="جاري تحميل البيانات...")
+    def load_data():
 
-@st.cache_data
-def load_data():
+        r = requests.get(ONEDRIVE_URL)
 
-    r = requests.get(ONEDRIVE_URL)
+        file = BytesIO(r.content)
 
-    file = BytesIO(r.content)
+        df = pd.read_excel(file, engine="openpyxl")
 
-    df = pd.read_excel(file)
+        df.columns = [str(c).strip() for c in df.columns]
 
-    return df
- 
+        df = df.astype(str).replace('nan','')
+
+        return df
+
+
+    index_df = load_data()
+
 
     # ================== تنظيف النص ==================
     def normalize_text(text):
@@ -65,57 +69,6 @@ def load_data():
         t = t.replace('ة','ه').replace('ى','ي')
 
         return " ".join(t.split())
-
-
-    # ================== بناء الفهرس ==================
-    @st.cache_data(show_spinner="جاري معالجة الملفات...")
-    def build_index():
-
-        all_data = []
-
-        files = list(DATA_FOLDER.glob("*.xls*"))
-
-        for file_path in files:
-
-            if file_path.name.startswith("~$"):
-                continue
-
-            try:
-
-                engine = 'openpyxl' if file_path.suffix != '.xls' else 'xlrd'
-
-                df = pd.read_excel(file_path, engine=engine)
-
-                df.columns = [str(c).strip() for c in df.columns]
-
-                df = df.astype(str).replace('nan','')
-
-                for i, row in df.iterrows():
-
-                    all_data.append({
-
-                        "C-Code": row.get("C-Code",""),
-                        "Name": row.get("Name",""),
-                        "موقف الحالة": row.get("موقف الحالة",""),
-                        "الرقم القومى": row.get("الرقم القومى",""),
-                        "تاريخ الميلاد": row.get("تاريخ الميلاد",""),
-                        "رقم كارت المفاوضية للفرد": row.get("رقم كارت المفاوضية للفرد",""),
-                        "رقم ملف المفاوضية": row.get("رقم ملف المفاوضية",""),
-                        "كود المفاوضية": row.get("كود المفاوضية",""),
-                        "موقف اللجوء": row.get("موقف اللجوء",""),
-                        "الملف": file_path.name,
-                        "السطر": i + 2
-
-                    })
-
-            except:
-                continue
-
-        return pd.DataFrame(all_data)
-
-
-    # تحميل البيانات
-    index_df = build_index()
 
 
     # ================== البحث ==================
@@ -140,15 +93,10 @@ def load_data():
             if q_code:
 
                 res = res[
-
-                    (res["C-Code"].astype(str).str.strip() == q_code.strip()) |
-
-                    (res["رقم كارت المفاوضية للفرد"].astype(str).str.strip() == q_code.strip()) |
-
-                    (res["رقم ملف المفاوضية"].astype(str).str.strip() == q_code.strip()) |
-
-                    (res["كود المفاوضية"].astype(str).str.strip() == q_code.strip())
-
+                    (res["C-Code"].str.strip() == q_code.strip()) |
+                    (res["رقم كارت المفاوضية للفرد"].str.strip() == q_code.strip()) |
+                    (res["رقم ملف المفاوضية"].str.strip() == q_code.strip()) |
+                    (res["كود المفاوضية"].str.strip() == q_code.strip())
                 ]
 
 
@@ -182,7 +130,4 @@ def load_data():
     if st.sidebar.button("🔒 تسجيل الخروج"):
 
         st.session_state["password_correct"] = False
-
         st.rerun()
-
-
