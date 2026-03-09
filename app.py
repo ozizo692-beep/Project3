@@ -118,18 +118,14 @@ if check_password():
 
                 st.dataframe(res, use_container_width=True)
 
-                st.download_button(
-                    "📥 تحميل النتائج CSV",
-                    data=res.to_csv(index=False).encode('utf-8-sig'),
-                    file_name="search_results.csv"
-                )
-
+              
 
     # ================== تسجيل الخروج ==================
     if st.sidebar.button("🔒 تسجيل الخروج"):
 
         st.session_state["password_correct"] = False
         st.rerun()
+
 
 
 
