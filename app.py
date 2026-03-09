@@ -33,7 +33,7 @@ def check_password():
 # ================== تشغيل النظام ==================
 if check_password():
 # ================== رابط OneDrive ==================
-    ONEDRIVE_URL = "https://mersalcharity-my.sharepoint.com/:x:/g/personal/omar_abdallah_mersal-ngo_org1/IQAZAIJBc3rMR4MABivs_NY4AU9ZwCDrPRi6BkAVIcAzCsY?e=UutyX6&download=1"
+    ONEDRIVE_URL = "https://mersalcharity-my.sharepoint.com/:x:/g/personal/omar_abdallah_mersal-ngo_org1/IQAZAIJBc3rMR4MABivs_NY4AU9ZwCDrPRi6BkAVIcAzCsY?download=1"
 
 
     # ================== تحميل البيانات ==================
@@ -137,5 +137,6 @@ if check_password():
 
         st.session_state["password_correct"] = False
         st.rerun()
+
 
 
