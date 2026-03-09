@@ -49,7 +49,7 @@ if check_password():
         file = BytesIO(r.content)
 
         try:
-            df = pd.read_excel(file, engine="openpyxl", sheet_name="all التكوين")
+            df = pd.read_excel(file, engine="openpyxl")
         except Exception as e:
             st.error(f"⚠️ الملف ليس Excel صحيح: {e}")
             return pd.DataFrame()
@@ -139,3 +139,4 @@ if check_password():
 
         st.session_state["password_correct"] = False
         st.rerun()
+
