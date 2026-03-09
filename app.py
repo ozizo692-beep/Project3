@@ -32,14 +32,13 @@ def check_password():
 
 # ================== تشغيل النظام ==================
 if check_password():
-
-    # ================== رابط OneDrive ==================
+# ================== رابط OneDrive ==================
     ONEDRIVE_URL = "https://mersalcharity-my.sharepoint.com/:x:/g/personal/omar_abdallah_mersal-ngo_org1/IQAZAIJBc3rMR4MABivs_NY4AU9ZwCDrPRi6BkAVIcAzCsY?e=UutyX6&download=1"
 
 
     # ================== تحميل البيانات ==================
-  @st.cache_data(show_spinner="جاري تحميل البيانات من OneDrive...")
-def load_data():
+      @st.cache_data(show_spinner="جاري تحميل البيانات من OneDrive...")
+      def load_data():
 
     r = requests.get(ONEDRIVE_URL)
 
@@ -138,4 +137,5 @@ def load_data():
 
         st.session_state["password_correct"] = False
         st.rerun()
+
 
