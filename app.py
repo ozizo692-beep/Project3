@@ -28,10 +28,9 @@ def check_password():
             st.error("❌ اسم المستخدم أو كلمة المرور غير صحيحة")
 
     return False
-
-
-# ================== تشغيل النظام ==================
 if check_password():
+
+
 # ================== رابط OneDrive ==================
     ONEDRIVE_URL = "https://mersalcharity-my.sharepoint.com/:x:/g/personal/omar_abdallah_mersal-ngo_org1/IQAZAIJBc3rMR4MABivs_NY4AU9ZwCDrPRi6BkAVIcAzCsY?download=1"
 
@@ -137,6 +136,7 @@ if check_password():
 
         st.session_state["password_correct"] = False
         st.rerun()
+
 
 
 
