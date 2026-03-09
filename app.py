@@ -49,7 +49,7 @@ if check_password():
         file = BytesIO(r.content)
 
         try:
-            df = pd.read_excel(file, engine="openpyxl"  , sheet_name="all التكوين")
+            df = pd.read_excel(file, engine="openpyxl", sheet_name="all التكوين")
         except Exception as e:
             st.error(f"⚠️ الملف ليس Excel صحيح: {e}")
             return pd.DataFrame()
@@ -61,6 +61,7 @@ if check_password():
 
 
     index_df = load_data()
+
     # ================== تنظيف النص ==================
     def normalize_text(text):
 
@@ -81,11 +82,8 @@ if check_password():
     q_code = st.sidebar.text_input("الكود")
     q_name = st.sidebar.text_input("الاسم")
     personall_card = st.sidebar.text_input("رقم كارت المفاوضية للفرد")
-    family_card = st.sidebar.text_input(" رقم ملف المفاوضية")
+    family_card = st.sidebar.text_input("رقم ملف المفاوضية")
     mof_card = st.sidebar.text_input("كود المفاوضية")
-
-
-
 
     if st.sidebar.button("ابدأ البحث"):
 
@@ -100,26 +98,23 @@ if check_password():
             # البحث بالكود
             if q_code:
                 res = res[
-                    (res["C-Code"].str.strip() == q_code.strip()) 
-                   
+                    (res["C-Code"].str.strip() == q_code.strip())
                 ]
-                if personall_card:
+
+            if personall_card:
                 res = res[
-                    (res["رقم كارت المفاوضية للفرد"].str.strip() == personall_card.strip()) 
-          
+                    (res["رقم كارت المفاوضية للفرد"].str.strip() == personall_card.strip())
                 ]
-                if family_card:
+
+            if family_card:
                 res = res[
-                 
-                    (res["رقم ملف المفاوضية"].str.strip() == family_card.strip()) 
-                    
+                    (res["رقم ملف المفاوضية"].str.strip() == family_card.strip())
                 ]
-                if mof_card:
+
+            if mof_card:
                 res = res[
-                    
                     (res["كود المفاوضية"].str.strip() == mof_card.strip())
                 ]
-                
 
             # البحث بالاسم
             if q_name:
@@ -127,7 +122,6 @@ if check_password():
                     res["Name"].apply(normalize_text)
                     .str.contains(normalize_text(q_name), na=False)
                 ]
-                
 
             if res.empty:
 
@@ -139,18 +133,9 @@ if check_password():
 
                 st.dataframe(res, use_container_width=True)
 
-              
 
     # ================== تسجيل الخروج ==================
     if st.sidebar.button("🔒 تسجيل الخروج"):
 
         st.session_state["password_correct"] = False
         st.rerun()
-
-
-
-
-
-
-
-
