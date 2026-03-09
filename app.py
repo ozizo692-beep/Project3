@@ -1,3 +1,4 @@
+```python
 import pandas as pd
 import streamlit as st
 import requests
@@ -28,39 +29,39 @@ def check_password():
             st.error("❌ اسم المستخدم أو كلمة المرور غير صحيحة")
 
     return False
-    if check_password():
 
 
-# ================== رابط OneDrive ==================
+# ================== تشغيل النظام بعد تسجيل الدخول ==================
+if check_password():
+
+    # ================== رابط OneDrive ==================
     ONEDRIVE_URL = "https://mersalcharity-my.sharepoint.com/:x:/g/personal/omar_abdallah_mersal-ngo_org1/IQAZAIJBc3rMR4MABivs_NY4AU9ZwCDrPRi6BkAVIcAzCsY?download=1"
 
-
     # ================== تحميل البيانات ==================
-      @st.cache_data(show_spinner="جاري تحميل البيانات من OneDrive...")
-      def load_data():
+    @st.cache_data(show_spinner="جاري تحميل البيانات من OneDrive...")
+    def load_data():
 
-    r = requests.get(ONEDRIVE_URL)
+        r = requests.get(ONEDRIVE_URL)
 
-    if r.status_code != 200:
-        st.error("فشل تحميل الملف من OneDrive")
-        return pd.DataFrame()
+        if r.status_code != 200:
+            st.error("فشل تحميل الملف من OneDrive")
+            return pd.DataFrame()
 
-    file = BytesIO(r.content)
+        file = BytesIO(r.content)
 
-    try:
-        df = pd.read_excel(file, engine="openpyxl")
-    except Exception as e:
-        st.error(f"⚠️ الملف ليس Excel صحيح: {e}")
-        return pd.DataFrame()
+        try:
+            df = pd.read_excel(file, engine="openpyxl")
+        except Exception as e:
+            st.error(f"⚠️ الملف ليس Excel صحيح: {e}")
+            return pd.DataFrame()
 
-    df.columns = [str(c).strip() for c in df.columns]
-    df = df.astype(str).replace("nan","")
+        df.columns = [str(c).strip() for c in df.columns]
+        df = df.astype(str).replace("nan", "")
 
-    return df
+        return df
 
 
     index_df = load_data()
-
 
     # ================== تنظيف النص ==================
     def normalize_text(text):
@@ -80,7 +81,6 @@ def check_password():
     st.sidebar.header("🔎 البحث")
 
     q_code = st.sidebar.text_input("الكود / رقم الملف / كارت المفوضية")
-
     q_name = st.sidebar.text_input("الاسم")
 
 
@@ -96,7 +96,6 @@ def check_password():
 
             # البحث بالكود
             if q_code:
-
                 res = res[
                     (res["C-Code"].str.strip() == q_code.strip()) |
                     (res["رقم كارت المفاوضية للفرد"].str.strip() == q_code.strip()) |
@@ -104,15 +103,12 @@ def check_password():
                     (res["كود المفاوضية"].str.strip() == q_code.strip())
                 ]
 
-
             # البحث بالاسم
             if q_name:
-
                 res = res[
                     res["Name"].apply(normalize_text)
                     .str.contains(normalize_text(q_name), na=False)
                 ]
-
 
             if res.empty:
 
@@ -136,8 +132,4 @@ def check_password():
 
         st.session_state["password_correct"] = False
         st.rerun()
-
-
-
-
-
+```
