@@ -34,24 +34,31 @@ def check_password():
 if check_password():
 
     # ================== رابط OneDrive ==================
-    ONEDRIVE_URL = "https://mersalcharity-my.sharepoint.com/:x:/g/personal/omar_abdallah_mersal-ngo_org1/IQAZAIJBc3rMR4MABivs_NY4AewjiwrpDvZzAH-BdcsHcdk?download=1"
+    ONEDRIVE_URL = "https://mersalcharity-my.sharepoint.com/:x:/g/personal/omar_abdallah_mersal-ngo_org1/IQAZAIJBc3rMR4MABivs_NY4AU9ZwCDrPRi6BkAVIcAzCsY?e=UutyX6&download=1"
 
 
     # ================== تحميل البيانات ==================
-    @st.cache_data(show_spinner="جاري تحميل البيانات...")
-    def load_data():
+  @st.cache_data(show_spinner="جاري تحميل البيانات من OneDrive...")
+def load_data():
 
-        r = requests.get(ONEDRIVE_URL)
+    r = requests.get(ONEDRIVE_URL)
 
-        file = BytesIO(r.content)
+    if r.status_code != 200:
+        st.error("فشل تحميل الملف من OneDrive")
+        return pd.DataFrame()
 
+    file = BytesIO(r.content)
+
+    try:
         df = pd.read_excel(file, engine="openpyxl")
+    except Exception as e:
+        st.error(f"⚠️ الملف ليس Excel صحيح: {e}")
+        return pd.DataFrame()
 
-        df.columns = [str(c).strip() for c in df.columns]
+    df.columns = [str(c).strip() for c in df.columns]
+    df = df.astype(str).replace("nan","")
 
-        df = df.astype(str).replace('nan','')
-
-        return df
+    return df
 
 
     index_df = load_data()
@@ -131,3 +138,4 @@ if check_password():
 
         st.session_state["password_correct"] = False
         st.rerun()
+
